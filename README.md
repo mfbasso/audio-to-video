@@ -39,6 +39,45 @@ ou
 audio-to-video
 ```
 
+## Gerar executável
+
+### Pré-requisitos
+
+- `uv` instalado
+- `ffmpeg`/`ffprobe` instalados no sistema (pré-requisito de runtime do app)
+
+### Build local
+
+Instalar dependências de build:
+
+```bash
+make install-build-deps
+```
+
+Gerar executável para o SO atual:
+
+```bash
+make build
+```
+
+Saída esperada:
+
+- Pasta `dist/audio-to-video` contendo o executável e bibliotecas.
+
+Empacotar artefato (macOS/Linux):
+
+```bash
+make package
+```
+
+### CI automatizado
+
+O workflow em `.github/workflows/build-executables.yml` roda a cada push na `main` e gera artefatos para:
+
+- macOS
+- Linux
+- Windows
+
 ## MVP atual
 
 - Seleção de arquivo de áudio
