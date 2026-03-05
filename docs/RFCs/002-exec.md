@@ -39,15 +39,15 @@ Para esta RFC, o plano inicial segue a opção 1 para reduzir risco e tempo de e
 ### 3) Estrutura proposta de build
 
 - `Makefile`
-	- `install-build-deps`: instala dependências de build.
-	- `clean`: remove `build/`, `dist/` e arquivos temporários.
-	- `build`: build padrão para o SO atual.
-	- `build-macos`, `build-linux`, `build-windows`: alvos explícitos (executados no respectivo SO).
-	- `package`: compacta saída em `.zip` (Windows) e `.tar.gz` (macOS/Linux).
+  - `install-build-deps`: instala dependências de build.
+  - `clean`: remove `build/`, `dist/` e arquivos temporários.
+  - `build`: build padrão para o SO atual.
+  - `build-macos`, `build-linux`, `build-windows`: alvos explícitos (executados no respectivo SO).
+  - `package`: compacta saída em `.zip` (Windows) e `.tar.gz` (macOS/Linux).
 
 - `packaging/pyinstaller.spec` (opcional, recomendado)
-	- Centraliza configurações de bundle.
-	- Facilita manutenção de data files, ícones e ajustes por plataforma.
+  - Centraliza configurações de bundle.
+  - Facilita manutenção de data files, ícones e ajustes por plataforma.
 
 ### 4) Dependências de build
 
@@ -64,16 +64,16 @@ Criar workflow em `.github/workflows/build-executables.yml` com:
 
 - **Trigger**: `push` na branch `main`.
 - **Matriz de SO**:
-	- `ubuntu-latest`
-	- `windows-latest`
-	- `macos-latest`
+  - `ubuntu-latest`
+  - `windows-latest`
+  - `macos-latest`
 - **Passos por job**:
-	1. Checkout do código.
-	2. Setup do Python (versão do projeto).
-	3. Instalação de dependências de runtime + build.
-	4. Execução do alvo de build (`make build` ou comando equivalente no Windows).
-	5. Empacotamento do diretório final.
-	6. Upload de artefatos com nome contendo SO e commit SHA.
+  1.  Checkout do código.
+  2.  Setup do Python (versão do projeto).
+  3.  Instalação de dependências de runtime + build.
+  4.  Execução do alvo de build (`make build` ou comando equivalente no Windows).
+  5.  Empacotamento do diretório final.
+  6.  Upload de artefatos com nome contendo SO e commit SHA.
 
 ### 6) Convenção de artefatos
 
@@ -100,17 +100,17 @@ Conteúdo mínimo:
 - Build isolado por plataforma (sem cross-compilar localmente).
 - Logs de build preservados nos jobs.
 - Checks mínimos antes de empacotar:
-	- inicialização do app,
-	- presença dos arquivos esperados em `dist/`.
+  - inicialização do app,
+  - presença dos arquivos esperados em `dist/`.
 
 ### 9) Riscos e mitigação
 
 - **Diferenças entre plataformas** (paths, permissões, runtime):
-	- Mitigação: matriz nativa no GitHub Actions.
+  - Mitigação: matriz nativa no GitHub Actions.
 - **Falso sucesso de build sem executável funcional**:
-	- Mitigação: smoke test simples no CI após gerar binário.
+  - Mitigação: smoke test simples no CI após gerar binário.
 - **Dependência externa de ffmpeg no MVP**:
-	- Mitigação: validação no startup + instruções claras no README.
+  - Mitigação: validação no startup + instruções claras no README.
 
 ### 10) Roadmap de entrega
 
