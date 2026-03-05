@@ -1,7 +1,13 @@
 [project]
 name = "audio-to-video"
 version = "0.1.0"
-description = "Add your description here"
+description = "Desktop app para converter áudio em vídeo com gradiente e equalizador."
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+	"numpy>=2.2.0",
+	"pillow>=11.0.0",
+]
+
+[project.scripts]
+audio-to-video = "audio_to_video.ui.app:run"
