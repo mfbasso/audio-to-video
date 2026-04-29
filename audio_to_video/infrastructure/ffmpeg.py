@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 
 
@@ -10,16 +12,41 @@ class FfmpegError(RuntimeError):
     pass
 
 
+def _get_bundle_dir() -> Path | None:
+    if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
+        return Path(sys._MEIPASS)
+    return None
+
+
+def get_ffmpeg_path(name: str) -> str:
+    """Retorna o caminho para o binário do ffmpeg/ffprobe, priorizando o bundle."""
+    bundle_dir = _get_bundle_dir()
+    if bundle_dir:
+        ext = ".exe" if os.name == "nt" else ""
+        # Procuramos na raiz ou em bin/ dentro do bundle
+        bundled_path = bundle_dir / "bin" / f"{name}{ext}"
+        if bundled_path.exists():
+            return str(bundled_path)
+        
+        # Fallback para a raiz do bundle
+        bundled_path = bundle_dir / f"{name}{ext}"
+        if bundled_path.exists():
+            return str(bundled_path)
+
+    # Fallback para o PATH do sistema
+    return shutil.which(name) or name
+
+
 def ensure_ffmpeg_available() -> None:
-    if shutil.which("ffmpeg") is None:
+    if shutil.which(get_ffmpeg_path("ffmpeg")) is None:
         raise FfmpegError("ffmpeg não encontrado no sistema.")
-    if shutil.which("ffprobe") is None:
+    if shutil.which(get_ffmpeg_path("ffprobe")) is None:
         raise FfmpegError("ffprobe não encontrado no sistema.")
 
 
 def get_audio_duration_seconds(audio_path: Path) -> float:
     command = [
-        "ffprobe",
+        get_ffmpeg_path("ffprobe"),
         "-v",
         "error",
         "-show_entries",
@@ -43,7 +70,7 @@ def get_audio_duration_seconds(audio_path: Path) -> float:
 
 def open_audio_pcm_stream(audio_path: Path, sample_rate: int) -> subprocess.Popen[bytes]:
     command = [
-        "ffmpeg",
+        get_ffmpeg_path("ffmpeg"),
         "-v",
         "error",
         "-i",
@@ -71,7 +98,7 @@ def open_video_encode_stream(
     fps: int,
 ) -> subprocess.Popen[bytes]:
     command = [
-        "ffmpeg",
+        get_ffmpeg_path("ffmpeg"),
         "-y",
         "-v",
         "error",

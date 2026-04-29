@@ -4,11 +4,19 @@ from pathlib import Path
 project_root = Path(SPECPATH).resolve().parent
 entry_script = project_root / 'main.py'
 
+datas = []
+bin_dir = project_root / 'bin'
+if bin_dir.exists():
+    for f in bin_dir.glob('*'):
+        if f.is_file():
+            # (origem, destino dentro do bundle)
+            datas.append((str(f), 'bin'))
+
 a = Analysis(
     [str(entry_script)],
     pathex=[str(project_root)],
     binaries=[],
-    datas=[],
+    datas=datas,
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},

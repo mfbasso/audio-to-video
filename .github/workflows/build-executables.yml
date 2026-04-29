@@ -39,7 +39,9 @@ jobs:
       - name: Build executable (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
-        run: uv run --with pyinstaller pyinstaller --clean packaging/pyinstaller.spec
+        run: |
+          make download-ffmpeg-windows
+          uv run --with pyinstaller pyinstaller --clean packaging/pyinstaller.spec
 
       - name: Smoke check output (Linux/macOS)
         if: runner.os != 'Windows'
